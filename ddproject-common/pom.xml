@@ -9,16 +9,13 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>ddproject-business</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ddproject-repositories</module>
-        <module>ddproject-model</module>
-        <module>ddproject-services</module>
-    </modules>
+    <artifactId>ddproject-common</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
-
 
 </project>
