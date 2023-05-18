@@ -1,12 +1,10 @@
 package com.digdes.java.ddproject.dto.member;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public class UpdateMemberDto {
     private String firstName;
     private String lastName;

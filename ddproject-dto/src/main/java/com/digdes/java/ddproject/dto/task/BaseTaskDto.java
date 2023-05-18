@@ -2,14 +2,12 @@ package com.digdes.java.ddproject.dto.task;
 
 import com.digdes.java.ddproject.common.enums.TaskStatus;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
 public class BaseTaskDto {
     private Long id;
     private String title;
@@ -21,5 +19,4 @@ public class BaseTaskDto {
     private Long executorId;
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
-
 }

@@ -2,12 +2,10 @@ package com.digdes.java.ddproject.dto.member;
 
 import com.digdes.java.ddproject.common.enums.MemberStatus;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
 public class MemberDto {
     private Long id;
     private String firstName;

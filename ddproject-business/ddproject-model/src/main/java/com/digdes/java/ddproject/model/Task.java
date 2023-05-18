@@ -1,11 +1,13 @@
 package com.digdes.java.ddproject.model;
 
 import com.digdes.java.ddproject.common.enums.TaskStatus;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
 
 @Data
+@Builder
 public class Task {
     private Long id;
     private String title;
