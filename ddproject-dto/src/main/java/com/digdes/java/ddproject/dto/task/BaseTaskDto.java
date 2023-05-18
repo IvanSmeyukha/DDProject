@@ -17,6 +17,7 @@ public class BaseTaskDto {
     private TaskStatus status;
     private Long authorId;
     private Long executorId;
+    private Long projectId;
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
 }

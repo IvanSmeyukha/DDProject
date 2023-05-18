@@ -14,4 +14,5 @@ public class UpdateTaskDto {
     private OffsetDateTime deadline;
     private Long authorId;
     private Long executorId;
+    private Long projectId;
 }

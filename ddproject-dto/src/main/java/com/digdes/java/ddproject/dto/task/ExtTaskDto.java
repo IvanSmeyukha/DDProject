@@ -1,6 +1,7 @@
 package com.digdes.java.ddproject.dto.task;
 
 import com.digdes.java.ddproject.model.Member;
+import com.digdes.java.ddproject.model.Project;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,4 +10,5 @@ import lombok.Setter;
 public class ExtTaskDto extends BaseTaskDto{
     private Member executor;
     private Member author;
+    private Project project;
 }

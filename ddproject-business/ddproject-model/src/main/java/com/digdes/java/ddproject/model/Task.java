@@ -11,6 +11,7 @@ public class Task {
     private String title;
     private String description;
     private Member executor;
+    private Project project;
     private Long laborHours;
     private OffsetDateTime deadline;
     private TaskStatus status;

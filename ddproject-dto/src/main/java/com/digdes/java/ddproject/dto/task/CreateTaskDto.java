@@ -12,5 +12,6 @@ public class CreateTaskDto{
     private String description;
     private Long laborHours;
     private OffsetDateTime deadline;
+    private Long projectId;
     private Long authorId;
 }
