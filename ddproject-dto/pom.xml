@@ -23,6 +23,12 @@
             <artifactId>ddproject-common</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-model</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
     </dependencies>
 
 </project>
