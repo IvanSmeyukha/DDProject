@@ -6,5 +6,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ListProjectTeamDto {
-    private Long projectCode;
+    private Long projectId;
 }

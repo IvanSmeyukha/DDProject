@@ -12,10 +12,8 @@
     <artifactId>ddproject-web</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+
+        <!-- modules -->
 
         <dependency>
             <groupId>com.digdes.ddproject</groupId>
@@ -27,6 +25,13 @@
             <groupId>com.digdes.ddproject</groupId>
             <artifactId>ddproject-dto</artifactId>
             <version>${revision}${changelist}</version>
+        </dependency>
+
+        <!-- utils -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 

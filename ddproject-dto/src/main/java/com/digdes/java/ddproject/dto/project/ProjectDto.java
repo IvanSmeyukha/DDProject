@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ProjectDto {
-    private Long code;
+    private Long id;
     private String title;
     private String description;
 }

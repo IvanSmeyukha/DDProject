@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @Getter
 public class ListsProjectsDto {
-    private Long code;
+    private Long id;
     private String title;
     private List<ProjectStatus> statusList;
 }

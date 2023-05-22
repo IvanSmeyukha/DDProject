@@ -12,15 +12,42 @@
     <artifactId>ddproject-repositories</artifactId>
 
     <dependencies>
+
+        <!-- modules -->
+
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-model</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-dto</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-mapping</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <!-- utils -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.digdes.ddproject</groupId>
-            <artifactId>ddproject-model</artifactId>
-            <version>${revision}${changelist}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
         </dependency>
     </dependencies>
 

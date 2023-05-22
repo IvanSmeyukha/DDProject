@@ -13,10 +13,8 @@
     <artifactId>ddproject-dto</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+
+        <!-- modules -->
 
         <dependency>
             <groupId>com.digdes.ddproject</groupId>
@@ -24,11 +22,13 @@
             <version>${revision}${changelist}</version>
         </dependency>
 
+        <!-- utils -->
+
         <dependency>
-            <groupId>com.digdes.ddproject</groupId>
-            <artifactId>ddproject-model</artifactId>
-            <version>${revision}${changelist}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>
