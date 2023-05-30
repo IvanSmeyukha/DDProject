@@ -1,8 +1,8 @@
 package com.digdes.java.ddproject.repositories.jdbc;
 
 import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
-import com.digdes.java.ddproject.dto.member.AddMemberToProjectDto;
-import com.digdes.java.ddproject.mapping.member.MemberResultSetMapper;
+import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
+import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.model.Member;
 import com.digdes.java.ddproject.repositories.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,8 @@ public class MemberRepositoryJdbc implements MemberRepository {
     private final String dbUrl;
     private final String dbUser;
     private final String dbPassword;
+    private final MemberMapper mapper;
+
     private static final String CREATE_MEMBER_QUERY = """
             insert into member(first_name, last_name, sur_name, position, account, email, status)
             values (?, ?, ?, ?, ?, ?, ?)
@@ -53,7 +55,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
         ) {
             ps.setString(1, member.getFirstName());
             ps.setString(2, member.getLastName());
-            ps.setObject(3, member.getSurName(), Types.VARCHAR);
+            ps.setObject(3, member.getPatronymic(), Types.VARCHAR);
             ps.setObject(4, member.getPosition(), Types.VARCHAR);
             ps.setObject(5, member.getAccount(), Types.BIGINT);
             ps.setObject(6, member.getEmail(), Types.VARCHAR);
@@ -74,7 +76,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
         ) {
             ps.setString(1, member.getFirstName());
             ps.setString(2, member.getLastName());
-            ps.setObject(3, member.getSurName(), Types.VARCHAR);
+            ps.setObject(3, member.getPatronymic(), Types.VARCHAR);
             ps.setObject(4, member.getPosition(), Types.VARCHAR);
             ps.setObject(5, member.getAccount(), Types.BIGINT);
             ps.setObject(6, member.getEmail(), Types.VARCHAR);
@@ -95,7 +97,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
             ps.setLong(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
-                    member = MemberResultSetMapper.map(resultSet);
+                    member = mapper.fromResultSet(resultSet);
                 }
             }
         }
@@ -117,7 +119,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
             }
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    Member member = MemberResultSetMapper.map(resultSet);
+                    Member member = mapper.fromResultSet(resultSet);
                     members.add(member);
                 }
             }
@@ -140,12 +142,12 @@ public class MemberRepositoryJdbc implements MemberRepository {
 
     @SneakyThrows
     @Override
-    public Optional<Member> addToProject(AddMemberToProjectDto addMember) {
+    public Optional<Member> addToProject(Long projectId, AddMemberToProjectDto addMember) {
         try (Connection connection = getConnection();
              PreparedStatement ps = connection.prepareStatement(ADD_MEMBER_TO_PROJECT_QUERY)
         ) {
             ps.setLong(1, addMember.getMemberId());
-            ps.setLong(2, addMember.getProjectId());
+            ps.setLong(2, projectId);
             ps.setString(3, addMember.getRole().toString());
             ps.executeUpdate();
             return getById(addMember.getMemberId());
@@ -170,9 +172,9 @@ public class MemberRepositoryJdbc implements MemberRepository {
             sql += " and member.last_name = ?";
             parameterMap.put(parameterIndex++, filter.getLastName());
         }
-        if (filter.getSurName() != null) {
+        if (filter.getPatronymic() != null) {
             sql += " and member.sur_name = ?";
-            parameterMap.put(parameterIndex++, filter.getSurName());
+            parameterMap.put(parameterIndex++, filter.getPatronymic());
         }
         if (filter.getPosition() != null) {
             sql += " and member.position = ?";

@@ -18,6 +18,19 @@
             <version>${revision}${changelist}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-dto</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <!-- utils -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

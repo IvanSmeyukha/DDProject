@@ -9,7 +9,7 @@ public class SearchMemberFilter {
     // TODO: comment all dto's fields
     private String firstName;
     private String lastName;
-    private String surName;
+    private String patronymic;
     private String position;
     private String email;
     private Long projectId;
