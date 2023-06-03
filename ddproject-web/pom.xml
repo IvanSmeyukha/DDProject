@@ -27,6 +27,13 @@
             <version>${revision}${changelist}</version>
         </dependency>
 
+        <!-- web -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!-- utils -->
 
         <dependency>

@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
 --changeset i.smeyukha:DDP-4_create_task_table
-CREATE TABLE task IF NOT EXISTS(
+CREATE TABLE IF NOT EXISTS task (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     description TEXT,

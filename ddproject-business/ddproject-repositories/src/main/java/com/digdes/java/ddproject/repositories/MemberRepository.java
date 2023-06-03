@@ -1,7 +1,7 @@
 package com.digdes.java.ddproject.repositories;
 
 import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
-import com.digdes.java.ddproject.dto.member.AddMemberToProjectDto;
+import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
 import com.digdes.java.ddproject.model.Member;
 
 import java.util.List;
@@ -20,5 +20,5 @@ public interface MemberRepository {
 
     Optional<Member> deleteById(Long id);
 
-    Optional<Member> addToProject(AddMemberToProjectDto addMember);
+    Optional<Member> addToProject(Long projectId, AddMemberToProjectDto addMember);
 }
