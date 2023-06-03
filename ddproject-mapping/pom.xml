@@ -5,27 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.digdes.ddproject</groupId>
-        <artifactId>ddproject-business</artifactId>
+        <artifactId>ddproject-parent</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>ddproject-model</artifactId>
+    <artifactId>ddproject-mapping</artifactId>
 
     <dependencies>
-
-        <!-- modules -->
-
         <dependency>
             <groupId>com.digdes.ddproject</groupId>
-            <artifactId>ddproject-common</artifactId>
+            <artifactId>ddproject-model</artifactId>
             <version>${revision}${changelist}</version>
-        </dependency>
-
-        <!-- utils -->
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
 
     </dependencies>

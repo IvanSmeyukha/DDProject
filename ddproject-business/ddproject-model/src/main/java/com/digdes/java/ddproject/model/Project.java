@@ -7,8 +7,12 @@ import lombok.Data;
 @Data
 @Builder
 public class Project {
-    private Long code;
+//    Project's id
+    private Long id;
+//    Short name of the project
     private String title;
+//    More detailed information about the project
     private String description;
+//    Project's status. May be: DRAFT -> DEVELOPMENT -> TESTING -> RELEASE
     private ProjectStatus status;
 }
