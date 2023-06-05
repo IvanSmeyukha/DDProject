@@ -63,7 +63,6 @@ public class MemberRepositoryFile implements MemberRepository {
         }
     }
 
-    @Override
     public Optional<Member> deleteById(Long id) {
         List<Member> members = getAll().get();
         Optional<Member> member = members.stream().filter(m -> m.getId().equals(id)).findFirst();
@@ -88,8 +87,4 @@ public class MemberRepositoryFile implements MemberRepository {
         return null;
     }
 
-    @Override
-    public Optional<Member> addToProject(Long projectId, AddMemberToProjectDto addMember) {
-        return Optional.empty();
-    }
 }

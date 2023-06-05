@@ -10,6 +10,8 @@ import com.digdes.java.ddproject.repositories.jpa.MemberRepositoryJpa;
 import com.digdes.java.ddproject.repositories.jpa.MemberSpecification;
 import com.digdes.java.ddproject.services.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -27,35 +29,31 @@ public class MemberServiceJpa implements MemberService {
 
     @Override
     public MemberDto findById(Long id) {
-        Optional<Member> memberOptional = memberRepository.findById(id);
-//        Или стоит бросать исключение?
-        if (memberOptional.isEmpty()) {
-            return new MemberDto();
-        }
-        return memberMapper.toMemberDto(memberOptional.get());
+        Member member = memberRepository.findById(id).orElse(new Member());
+        return memberMapper.toMemberDto(member);
+    }
+
+    public MemberDto findByAccountUsername(String username) {
+        Member member = memberRepository.findMemberByAccount_Username(username).orElse(new Member());
+        return memberMapper.toMemberDto(member);
     }
 
     @Override
     public MemberDto create(MemberDto memberDto) {
         Member member = memberMapper.fromMemberDto(memberDto);
-//        Надо ли это делать?
-        member.setId(null);
         member.setStatus(MemberStatus.ACTIVE);
-        Member createdMember = memberRepository.save(member);
-        return memberMapper.toMemberDto(createdMember);
+        return memberMapper.toMemberDto(memberRepository.save(member));
     }
 
+    @Transactional
     @Override
-    public MemberDto update(MemberDto dto) {
-        if (ObjectUtils.isEmpty(dto.getId())) {
-            throw new NullIdException("Id can't be null");
-        }
+    public MemberDto update(Long id, MemberDto dto) {
         Member member = memberMapper.fromMemberDto(dto);
-        Optional<Member> memberOptional = memberRepository.findById(member.getId());
-        if(memberOptional.isEmpty()){
-            throw new NoSuchElementException(String.format("Member with id = %d not exists", member.getId()));
-        }
-        return memberMapper.toMemberDto(memberRepository.save(member));
+        member.setId(id);
+        Member updatedMember = memberRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(String.format("Member with id = %d not exists", id))
+        );
+        return memberMapper.toMemberDto(memberRepository.save(updatedMember));
     }
 
     @Transactional

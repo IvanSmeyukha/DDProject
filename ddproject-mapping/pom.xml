@@ -24,6 +24,11 @@
             <version>${revision}${changelist}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+
         <!-- utils -->
 
         <dependency>
