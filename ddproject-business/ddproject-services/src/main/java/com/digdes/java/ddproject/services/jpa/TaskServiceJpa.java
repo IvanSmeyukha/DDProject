@@ -43,12 +43,14 @@ public class TaskServiceJpa implements TaskService {
         if (task.getCreationDate().isAfter(task.getDeadline().minusHours(task.getLaborHours()))) {
             throw new ImpossibleDeadlineException("Impossible deadline");
         }
-//        Или id автора приходит от клиента?
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member author = memberMapper.fromMemberDto(memberServiceJpa.findByAccountUsername(authentication.getName()));
+        if(ObjectUtils.isEmpty(author.getId())) {
+            throw new MemberNotInProjectException("Only a project members can create a task");
+        }
         task.setAuthor(author);
         checkMember(task.getProject().getId(), task.getAuthor().getId());
-        if (!ObjectUtils.isEmpty(task.getExecutor().getId())){
+        if (!ObjectUtils.isEmpty(task.getExecutor())){
             checkMember(task.getProject().getId(), task.getAuthor().getId());
         }
         task.setStatus(TaskStatus.NEW);
@@ -73,12 +75,15 @@ public class TaskServiceJpa implements TaskService {
         task.setLastUpdateDate(OffsetDateTime.now());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Member author = memberMapper.fromMemberDto(memberServiceJpa.findByAccountUsername(authentication.getName()));
+        if(ObjectUtils.isEmpty(author.getId())) {
+            throw new MemberNotInProjectException("Only a project members can create a task");
+        }
         task.setAuthor(author);
         checkMember(task.getProject().getId(), task.getAuthor().getId());
         if (taskRepository.findById(id).isEmpty()) {
             throw new NoSuchElementException(String.format("Task with id = %d not exists", id));
         }
-        if (!ObjectUtils.isEmpty(task.getExecutor().getId())){
+        if (!ObjectUtils.isEmpty(task.getExecutor())){
             checkMember(task.getProject().getId(), task.getAuthor().getId());
         }
         return taskMapper.toExtTaskDto(taskRepository.save(task));

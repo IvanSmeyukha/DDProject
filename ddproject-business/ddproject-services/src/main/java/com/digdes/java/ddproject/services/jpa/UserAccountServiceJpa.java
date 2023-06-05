@@ -7,6 +7,7 @@ import com.digdes.java.ddproject.repositories.jpa.UserAccountRepositoryJpa;
 import com.digdes.java.ddproject.services.UserAccountService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

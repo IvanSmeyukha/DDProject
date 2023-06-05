@@ -35,7 +35,7 @@ public class MemberController {
     @GetMapping(value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public MemberDto getById(@Parameter(name = "member id") @PathVariable Long id) {
+    public MemberDto getById(@PathVariable Long id) {
         return memberService.findById(id);
     }
 
@@ -51,7 +51,7 @@ public class MemberController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public MemberDto create(@Parameter(name = "member info") @RequestBody @Valid MemberDto dto) {
+    public MemberDto create(@RequestBody @Valid MemberDto dto) {
         return memberService.create(dto);
     }
 
@@ -67,8 +67,8 @@ public class MemberController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public MemberDto update(@Parameter(name = "member id") @PathVariable Long id,
-                            @Parameter(name = "member info")@RequestBody @Valid MemberDto dto
+    public MemberDto update(@PathVariable Long id,
+                            @RequestBody @Valid MemberDto dto
     ) {
         return memberService.update(id, dto);
     }
@@ -82,10 +82,9 @@ public class MemberController {
             }
     )
     @DeleteMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public MemberDto delete(@Parameter(name = "member id") @PathVariable Long id) {
+    public MemberDto delete(@PathVariable Long id) {
         return memberService.delete(id);
     }
 
@@ -101,7 +100,7 @@ public class MemberController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<MemberDto> search(@Parameter(name = "filter") @RequestBody SearchMemberFilter filter) {
+    public List<MemberDto> search(@RequestBody SearchMemberFilter filter) {
         return memberService.search(filter);
     }
 

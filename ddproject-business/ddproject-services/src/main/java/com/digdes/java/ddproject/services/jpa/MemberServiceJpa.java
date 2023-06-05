@@ -74,4 +74,8 @@ public class MemberServiceJpa implements MemberService {
         List<Member> members = memberRepository.findAll(MemberSpecification.getSpec(filter));
         return members.stream().map(memberMapper::toMemberDto).toList();
     }
+
+    public boolean isMemberExist(Long id){
+        return memberRepository.findById(id).isPresent();
+    }
 }

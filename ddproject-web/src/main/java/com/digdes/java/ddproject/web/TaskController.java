@@ -35,7 +35,7 @@ public class TaskController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ExtTaskDto create(@Parameter(name = "task info") @RequestBody BaseTaskDto dto) {
+    public ExtTaskDto create(@RequestBody BaseTaskDto dto) {
         return taskService.create(dto);
     }
 
@@ -51,8 +51,8 @@ public class TaskController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ExtTaskDto update(@Parameter(name = "task id") @PathVariable Long id,
-                             @Parameter(name = "task info") @RequestBody BaseTaskDto dto
+    public ExtTaskDto update(@PathVariable Long id,
+                             @RequestBody BaseTaskDto dto
     ) {
         return taskService.update(id, dto);
     }
@@ -66,11 +66,10 @@ public class TaskController {
             }
     )
     @PutMapping(value = "/{id}/status",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ExtTaskDto updateStatus(@Parameter(name = "task id") @PathVariable Long id,
-                                   @Parameter(name = "task info") @RequestParam TaskStatus status
+    public ExtTaskDto updateStatus(@PathVariable Long id,
+                                   @RequestParam TaskStatus status
     ) {
         return taskService.updateStatus(id, status);
     }
@@ -87,7 +86,7 @@ public class TaskController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<BaseTaskDto> search(@Parameter(name = "filter") @RequestBody SearchTaskFilter dto) {
+    public List<BaseTaskDto> search(@RequestBody SearchTaskFilter dto) {
         return taskService.search(dto);
     }
 }

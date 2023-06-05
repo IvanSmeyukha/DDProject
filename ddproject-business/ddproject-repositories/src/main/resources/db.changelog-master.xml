@@ -7,5 +7,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd
        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    <includeAll path="/changelogs/" relativeToChangelogFile="true" />
+    <include file="/changelogs/2023-05-22-DDP-1_create_member_table.xml" relativeToChangelogFile="true"/>
+    <include file="/changelogs/2023-05-22-DDP-2_create_project_table.xml" relativeToChangelogFile="true"/>
+    <include file="/changelogs/2023-05-22-DDP-3_create_project_team_table.xml" relativeToChangelogFile="true"/>
+    <include file="/changelogs/2023-05-22-DDP-4_create_task_table.xml" relativeToChangelogFile="true"/>
+    <include file="/changelogs/2023-06-01-DDP-5_create_account_table.xml" relativeToChangelogFile="true"/>
+    <include file="/changelogs/2023-06-01-DDP-6_alter_member_table_add_account_fk.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

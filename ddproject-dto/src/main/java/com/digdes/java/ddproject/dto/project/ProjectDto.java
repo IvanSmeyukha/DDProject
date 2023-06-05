@@ -21,6 +21,5 @@ public class ProjectDto {
     @Schema(description = "Project's description")
     private String description;
     @Schema(description = "Project's status")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ProjectStatus status;
 }

@@ -32,13 +32,13 @@ public class BaseTaskDto {
     @NotNull
     private OffsetDateTime deadline;
     @Schema(description = "Task's status")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private TaskStatus status;
     @Schema(description = "Task's author id")
     private Long authorId;
     @Schema(description = "Task's executor id")
     private Long executorId;
     @Schema(description = "Id of the project to which the task is attached")
+    @NotNull
     private Long projectId;
     @Schema(description = "Task's creation date")
     private OffsetDateTime creationDate;

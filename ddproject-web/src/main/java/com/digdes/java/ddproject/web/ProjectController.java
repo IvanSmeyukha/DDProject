@@ -41,7 +41,7 @@ public class ProjectController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ProjectDto create(@Parameter(name = "project info") @RequestBody @Valid ProjectDto dto) {
+    public ProjectDto create(@RequestBody @Valid ProjectDto dto) {
         return projectService.create(dto);
     }
 
@@ -57,8 +57,8 @@ public class ProjectController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ProjectDto update(@Parameter(name = "project id") @PathVariable Long id,
-                             @Parameter(name = "project info") @RequestBody @Valid ProjectDto dto
+    public ProjectDto update(@PathVariable Long id,
+                             @RequestBody @Valid ProjectDto dto
     ) {
         return projectService.update(id, dto);
     }
@@ -72,11 +72,10 @@ public class ProjectController {
             }
     )
     @PutMapping(value = "/{id}/status",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ProjectDto updateStatus(@Parameter(name = "project id") @PathVariable Long id,
-                                   @Parameter(name = "project status") @RequestParam ProjectStatus status
+    public ProjectDto updateStatus(@PathVariable Long id,
+                                   @RequestParam ProjectStatus status
     ) {
         return projectService.updateStatus(id, status);
     }
@@ -93,7 +92,7 @@ public class ProjectController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<ProjectDto> search(@Parameter(name = "filter") @RequestBody SearchProjectFilter filter) {
+    public List<ProjectDto> search(@RequestBody SearchProjectFilter filter) {
         return projectService.search(filter);
     }
 
@@ -108,7 +107,7 @@ public class ProjectController {
     @GetMapping(value = "/{projectId}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ProjectDto getById(@Parameter(name = "project id") @PathVariable Long projectId) {
+    public ProjectDto getById(@PathVariable Long projectId) {
         return projectService.getById(projectId);
     }
 
@@ -121,10 +120,9 @@ public class ProjectController {
             }
     )
     @GetMapping(value = "/{projectId}/team",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<MemberDto> listProjectTeam(@Parameter(name = "project id") @PathVariable Long projectId) {
+    public List<MemberDto> listProjectTeam(@PathVariable Long projectId) {
         return projectService.listAllMembers(projectId);
     }
 
@@ -137,12 +135,11 @@ public class ProjectController {
             }
     )
     @PostMapping(value = "/{projectId}/team",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<MemberDto> addMember(@Parameter(name = "project id") @PathVariable Long projectId,
-                                     @Parameter(name = "member id") @RequestParam Long memberId,
-                                     @Parameter(name = "member role") @RequestParam Role role
+    public List<MemberDto> addMember(@PathVariable Long projectId,
+                                     @RequestParam Long memberId,
+                                     @RequestParam Role role
     ) {
         return projectService.addMember(projectId, memberId, role);
     }
@@ -156,11 +153,10 @@ public class ProjectController {
             }
     )
     @DeleteMapping(value = "/{projectId}/team/{memberId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<MemberDto> deleteMember(@Parameter(name = "project id") @PathVariable Long projectId,
-                                        @Parameter(name = "member id") @PathVariable Long memberId) {
+    public List<MemberDto> deleteMember(@PathVariable Long projectId,
+                                        @PathVariable Long memberId) {
         return projectService.deleteMember(projectId, memberId);
     }
 }
