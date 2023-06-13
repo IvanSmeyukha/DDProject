@@ -3,9 +3,10 @@ package com.digdes.java.ddproject.services.jpa;
 import com.digdes.java.ddproject.common.enums.TaskStatus;
 import com.digdes.java.ddproject.common.exceptions.ImpossibleDeadlineException;
 import com.digdes.java.ddproject.common.exceptions.MemberNotInProjectException;
-import com.digdes.java.ddproject.dto.filters.SearchTaskFilter;
+import com.digdes.java.ddproject.dto.filters.SearchTaskFilterDto;
 import com.digdes.java.ddproject.dto.task.BaseTaskDto;
 import com.digdes.java.ddproject.dto.task.ExtTaskDto;
+import com.digdes.java.ddproject.mapping.filters.SearchTaskFilterMapper;
 import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.mapping.task.TaskMapper;
 import com.digdes.java.ddproject.model.Member;
@@ -15,6 +16,7 @@ import com.digdes.java.ddproject.repositories.jpa.TaskSpecification;
 import com.digdes.java.ddproject.services.ProjectTeamService;
 import com.digdes.java.ddproject.services.TaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,8 @@ import org.springframework.util.ObjectUtils;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TaskServiceJpa implements TaskService {
@@ -34,12 +36,21 @@ public class TaskServiceJpa implements TaskService {
     private final MemberServiceJpa memberServiceJpa;
     private final TaskMapper taskMapper;
     private final MemberMapper memberMapper;
+    private final SearchTaskFilterMapper filterMapper;
 
     @Transactional
     @Override
     public ExtTaskDto create(BaseTaskDto dto) {
         Task task = taskMapper.fromTaskDto(dto);
         task.setCreationDate(OffsetDateTime.now());
+        validateTask(task);
+        task.setStatus(TaskStatus.NEW);
+        Task createdTask = taskRepository.save(task);
+        log.info("Create task with id = {}", createdTask.getId());
+        return taskMapper.toExtTaskDto(createdTask);
+    }
+
+    private void validateTask(Task task) {
         if (task.getCreationDate().isAfter(task.getDeadline().minusHours(task.getLaborHours()))) {
             throw new ImpossibleDeadlineException("Impossible deadline");
         }
@@ -51,10 +62,8 @@ public class TaskServiceJpa implements TaskService {
         task.setAuthor(author);
         checkMember(task.getProject().getId(), task.getAuthor().getId());
         if (!ObjectUtils.isEmpty(task.getExecutor())){
-            checkMember(task.getProject().getId(), task.getAuthor().getId());
+            checkMember(task.getProject().getId(), task.getExecutor().getId());
         }
-        task.setStatus(TaskStatus.NEW);
-        return taskMapper.toExtTaskDto(taskRepository.save(task));
     }
 
     private void checkMember(Long projectId, Long memberId) {
@@ -70,23 +79,16 @@ public class TaskServiceJpa implements TaskService {
     @Transactional
     @Override
     public ExtTaskDto update(Long id, BaseTaskDto dto) {
-        Task task = taskMapper.fromTaskDto(dto);
-        task.setId(id);
-        task.setLastUpdateDate(OffsetDateTime.now());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member author = memberMapper.fromMemberDto(memberServiceJpa.findByAccountUsername(authentication.getName()));
-        if(ObjectUtils.isEmpty(author.getId())) {
-            throw new MemberNotInProjectException("Only a project members can create a task");
-        }
-        task.setAuthor(author);
-        checkMember(task.getProject().getId(), task.getAuthor().getId());
         if (taskRepository.findById(id).isEmpty()) {
             throw new NoSuchElementException(String.format("Task with id = %d not exists", id));
         }
-        if (!ObjectUtils.isEmpty(task.getExecutor())){
-            checkMember(task.getProject().getId(), task.getAuthor().getId());
-        }
-        return taskMapper.toExtTaskDto(taskRepository.save(task));
+        Task task = taskMapper.fromTaskDto(dto);
+        validateTask(task);
+        task.setId(id);
+        task.setLastUpdateDate(OffsetDateTime.now());
+        Task updatedTask = taskRepository.save(task);
+        log.info("Update task with id = {}", updatedTask.getId());
+        return taskMapper.toExtTaskDto(updatedTask);
     }
 
     @Override
@@ -95,12 +97,14 @@ public class TaskServiceJpa implements TaskService {
                 () -> new NoSuchElementException(String.format("Task with id = %d not exists", id))
         );
         task.setStatus(status);
-        return taskMapper.toExtTaskDto(taskRepository.save(task));
+        Task updatedTask = taskRepository.save(task);
+        log.info("Update the status of the task with id = {}", updatedTask.getId());
+        return taskMapper.toExtTaskDto(updatedTask);
     }
 
     @Override
-    public List<BaseTaskDto> search(SearchTaskFilter filter) {
-        List<Task> tasks = taskRepository.findAll(TaskSpecification.getSpec(filter));
+    public List<BaseTaskDto> search(SearchTaskFilterDto filter) {
+        List<Task> tasks = taskRepository.findAll(TaskSpecification.getSpec(filterMapper.fromDto(filter)));
         return tasks
                 .stream()
                 .map(taskMapper::toBaseTaskDto)

@@ -20,16 +20,16 @@ public class BaseTaskDto {
     @Schema(description = "Task's id")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    @NotBlank
+    @NotBlank(message = "Title is required field")
     @Schema(description = "Task's title")
     private String title;
     @Schema(description = "Task's description")
     private String description;
     @Schema(description = "Task's labor hours")
-    @NotNull
+    @NotNull(message = "Labor hours is required field")
     private Long laborHours;
     @Schema(description = "Task's deadline")
-    @NotNull
+    @NotNull(message = "Deadline is required field")
     private OffsetDateTime deadline;
     @Schema(description = "Task's status")
     private TaskStatus status;
@@ -38,10 +38,12 @@ public class BaseTaskDto {
     @Schema(description = "Task's executor id")
     private Long executorId;
     @Schema(description = "Id of the project to which the task is attached")
-    @NotNull
+    @NotNull(message = "Project id is required field")
     private Long projectId;
     @Schema(description = "Task's creation date")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OffsetDateTime creationDate;
     @Schema(description = "Last date when Task was updated")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OffsetDateTime lastUpdateDate;
 }

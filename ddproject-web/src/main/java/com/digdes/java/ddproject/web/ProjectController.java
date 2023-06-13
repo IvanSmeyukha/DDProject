@@ -3,14 +3,11 @@ package com.digdes.java.ddproject.web;
 import com.digdes.java.ddproject.common.enums.ProjectStatus;
 import com.digdes.java.ddproject.common.enums.Role;
 import com.digdes.java.ddproject.dto.error.ApiErrorResponse;
-import com.digdes.java.ddproject.dto.filters.SearchProjectFilter;
-import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
+import com.digdes.java.ddproject.dto.filters.SearchProjectFilterDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.dto.project.ProjectDto;
-import com.digdes.java.ddproject.dto.project.UpdateProjectStatusDto;
 import com.digdes.java.ddproject.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,6 +31,9 @@ public class ProjectController {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "409",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
     )
@@ -49,6 +49,9 @@ public class ProjectController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
@@ -67,6 +70,9 @@ public class ProjectController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
@@ -92,7 +98,7 @@ public class ProjectController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<ProjectDto> search(@RequestBody SearchProjectFilter filter) {
+    public List<ProjectDto> search(@RequestBody SearchProjectFilterDto filter) {
         return projectService.search(filter);
     }
 
@@ -108,7 +114,7 @@ public class ProjectController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ProjectDto getById(@PathVariable Long projectId) {
-        return projectService.getById(projectId);
+        return projectService.findById(projectId);
     }
 
     @Operation(summary = "Get members who are working on the project",
@@ -130,6 +136,9 @@ public class ProjectController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }

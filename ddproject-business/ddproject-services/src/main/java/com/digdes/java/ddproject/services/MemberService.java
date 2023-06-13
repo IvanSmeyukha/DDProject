@@ -1,6 +1,6 @@
 package com.digdes.java.ddproject.services;
 
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
+import com.digdes.java.ddproject.dto.filters.SearchMemberFilterDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 
 import java.util.List;
@@ -16,6 +16,9 @@ public interface MemberService {
 
     MemberDto findById(Long id);
 
-    List<MemberDto> search(SearchMemberFilter filter);
+    MemberDto findByAccountUsername(String username);
 
+    List<MemberDto> search(SearchMemberFilterDto filter);
+
+    boolean isMemberExist(Long id);
 }

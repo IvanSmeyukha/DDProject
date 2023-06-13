@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "Filter for projects searching")
-public class SearchProjectFilter {
+public class SearchProjectFilterDto {
     @Schema(description = "Project's id")
     private Long id;
     @Schema(description = "Project's title")

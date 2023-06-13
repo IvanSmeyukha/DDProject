@@ -1,7 +1,6 @@
 package com.digdes.java.ddproject.dto.member;
 
 import com.digdes.java.ddproject.common.enums.MemberStatus;
-import com.digdes.java.ddproject.dto.security.UserAccountDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

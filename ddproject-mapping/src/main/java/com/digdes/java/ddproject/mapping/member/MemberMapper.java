@@ -1,21 +1,14 @@
 package com.digdes.java.ddproject.mapping.member;
 
-import com.digdes.java.ddproject.common.enums.MemberStatus;
 import com.digdes.java.ddproject.dto.member.MemberDto;
-import com.digdes.java.ddproject.mapping.useraccount.UserAccountMapper;
 import com.digdes.java.ddproject.model.Member;
 import com.digdes.java.ddproject.model.UserAccount;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Component
-@RequiredArgsConstructor
 public class MemberMapper {
-    private final UserAccountMapper userAccountMapper;
 
     public Member fromMemberDto(MemberDto memberDto) {
         Member member = Member.builder()
@@ -47,18 +40,5 @@ public class MemberMapper {
             dto.setAccount(member.getAccount().getId());
         }
         return dto;
-    }
-
-    public Member fromResultSet(ResultSet resultSet) throws SQLException {
-        return Member.builder()
-                .id(resultSet.getLong("id"))
-                .firstName(resultSet.getString("first_name"))
-                .lastName(resultSet.getString("last_name"))
-                .patronymic(resultSet.getString("sur_name"))
-                .account(UserAccount.builder().id(resultSet.getLong("account")).build())
-                .position(resultSet.getString("position"))
-                .email(resultSet.getString("email"))
-                .status(MemberStatus.valueOf(resultSet.getString("status")))
-                .build();
     }
 }

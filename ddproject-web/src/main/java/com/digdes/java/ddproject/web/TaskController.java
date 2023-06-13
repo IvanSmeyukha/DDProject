@@ -2,15 +2,15 @@ package com.digdes.java.ddproject.web;
 
 import com.digdes.java.ddproject.common.enums.TaskStatus;
 import com.digdes.java.ddproject.dto.error.ApiErrorResponse;
-import com.digdes.java.ddproject.dto.filters.SearchTaskFilter;
+import com.digdes.java.ddproject.dto.filters.SearchTaskFilterDto;
 import com.digdes.java.ddproject.dto.task.BaseTaskDto;
 import com.digdes.java.ddproject.dto.task.ExtTaskDto;
 import com.digdes.java.ddproject.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ public class TaskController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ExtTaskDto create(@RequestBody BaseTaskDto dto) {
+    public ExtTaskDto create(@RequestBody @Valid BaseTaskDto dto) {
         return taskService.create(dto);
     }
 
@@ -43,6 +43,9 @@ public class TaskController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
@@ -52,7 +55,7 @@ public class TaskController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ExtTaskDto update(@PathVariable Long id,
-                             @RequestBody BaseTaskDto dto
+                             @RequestBody @Valid BaseTaskDto dto
     ) {
         return taskService.update(id, dto);
     }
@@ -61,6 +64,9 @@ public class TaskController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
@@ -86,7 +92,7 @@ public class TaskController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<BaseTaskDto> search(@RequestBody SearchTaskFilter dto) {
+    public List<BaseTaskDto> search(@RequestBody SearchTaskFilterDto dto) {
         return taskService.search(dto);
     }
 }

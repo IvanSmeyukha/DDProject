@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(description = "Filter for members searching")
-public class SearchMemberFilter {
+public class SearchMemberFilterDto {
     @Schema(description = "Member's first name")
     private String firstName;
     @Schema(description = "Member's last name")

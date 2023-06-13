@@ -27,12 +27,6 @@
             <version>${revision}${changelist}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.digdes.ddproject</groupId>
-            <artifactId>ddproject-mapping</artifactId>
-            <version>${revision}${changelist}</version>
-        </dependency>
-
         <!-- web -->
 
         <dependency>

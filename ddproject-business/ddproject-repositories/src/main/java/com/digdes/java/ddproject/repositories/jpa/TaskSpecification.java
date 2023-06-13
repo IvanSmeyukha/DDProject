@@ -1,8 +1,7 @@
 package com.digdes.java.ddproject.repositories.jpa;
 
-import com.digdes.java.ddproject.dto.filters.SearchTaskFilter;
-import com.digdes.java.ddproject.model.Project;
 import com.digdes.java.ddproject.model.Task;
+import com.digdes.java.ddproject.repositories.filters.SearchTaskFilter;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
@@ -44,6 +43,7 @@ public class TaskSpecification {
                                 .toArray(Predicate[]::new))
                 );
             }
+            query.orderBy(criteriaBuilder.desc(root.get("creationDate")));
             if (CollectionUtils.isEmpty(predicates)) {
                 return query.where().getRestriction();
             }

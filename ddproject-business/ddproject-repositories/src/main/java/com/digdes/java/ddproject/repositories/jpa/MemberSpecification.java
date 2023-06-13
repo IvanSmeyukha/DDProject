@@ -1,8 +1,8 @@
 package com.digdes.java.ddproject.repositories.jpa;
 
 import com.digdes.java.ddproject.common.enums.MemberStatus;
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
 import com.digdes.java.ddproject.model.Member;
+import com.digdes.java.ddproject.repositories.filters.SearchMemberFilter;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ObjectUtils;
@@ -16,19 +16,29 @@ public class MemberSpecification {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.notEqual(root.get("status"), MemberStatus.DELETED));
             if(!ObjectUtils.isEmpty(filter.getFirstName())){
-                predicates.add(criteriaBuilder.like(root.get("firstName"), filter.getFirstName()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("firstName")),
+                        String.format("%%%s%%", filter.getFirstName().toLowerCase())));
             }
             if(!ObjectUtils.isEmpty(filter.getLastName())){
-                predicates.add(criteriaBuilder.like(root.get("lastName"), filter.getLastName()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("lastName")),
+                        String.format("%%%s%%", filter.getLastName().toLowerCase())));
             }
             if(!ObjectUtils.isEmpty(filter.getPatronymic())){
-                predicates.add(criteriaBuilder.like(root.get("patronymic"), filter.getPatronymic()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("patronymic")),
+                        String.format("%%%s%%", filter.getPatronymic().toLowerCase())));
             }
             if(!ObjectUtils.isEmpty(filter.getPosition())){
-                predicates.add(criteriaBuilder.like(root.get("position"), filter.getPosition()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("position")),
+                        String.format("%%%s%%", filter.getPosition().toLowerCase())));
             }
             if(!ObjectUtils.isEmpty(filter.getEmail())){
-                predicates.add(criteriaBuilder.like(root.get("email"), filter.getEmail()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("email")),
+                        String.format("%%%s%%", filter.getEmail().toLowerCase())));
             }
             return query.where(criteriaBuilder.and(predicates.toArray(Predicate[]::new))).getRestriction();
         });

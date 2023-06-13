@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "Filter for tasks searching")
-public class SearchTaskFilter {
+public class SearchTaskFilterDto {
     @Schema(description = "Task's id")
     private String title;
     @Schema(description = "Task's deadline min value")
