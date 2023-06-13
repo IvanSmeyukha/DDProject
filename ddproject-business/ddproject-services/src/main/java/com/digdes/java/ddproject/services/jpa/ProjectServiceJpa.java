@@ -1,6 +1,7 @@
 package com.digdes.java.ddproject.services.jpa;
 
 import com.digdes.java.ddproject.common.enums.ProjectStatus;
+import com.digdes.java.ddproject.common.enums.Role;
 import com.digdes.java.ddproject.common.exceptions.NullIdException;
 import com.digdes.java.ddproject.dto.filters.SearchProjectFilter;
 import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
@@ -28,14 +29,14 @@ import java.util.Optional;
 public class ProjectServiceJpa implements ProjectService {
     private final ProjectRepositoryJpa projectRepository;
     private final ProjectTeamService projectTeamService;
+    private final MemberServiceJpa memberServiceJpa;
     private final ProjectMapper projectMapper;
 
     @Transactional
     @Override
     public ProjectDto create(ProjectDto dto) {
         Project project = projectMapper.fromProjectDto(dto);
-        Optional<Project> projectOptional = projectRepository.findById(project.getId());
-        if(projectOptional.isPresent()){
+        if(projectRepository.findById(project.getId()).isPresent()){
             throw new DuplicateKeyException(String.format("Project with id = %d already exists", project.getId()));
         }
         project.setStatus(ProjectStatus.DRAFT);
@@ -44,38 +45,29 @@ public class ProjectServiceJpa implements ProjectService {
 
     @Transactional
     @Override
-    public ProjectDto update(ProjectDto dto) {
-        if(ObjectUtils.isEmpty(dto.getId())){
-            throw new NullIdException("Id can't be null");
+    public ProjectDto update(Long id, ProjectDto dto) {
+        if(projectRepository.findById(id).isEmpty()){
+            throw new NoSuchElementException(String.format("Project with id = %d not exists", id));
         }
         Project project = projectMapper.fromProjectDto(dto);
-        Optional<Project> projectOptional = projectRepository.findById(project.getId());
-        if(projectOptional.isEmpty()){
-            throw new NoSuchElementException(String.format("Project with id = %d not exists", project.getId()));
-        }
-        project.setStatus(projectOptional.get().getStatus());
+        project.setId(id);
         return projectMapper.toProjectDto(projectRepository.save(project));
     }
 
     @Transactional
     @Override
-    public ProjectDto updateStatus(UpdateProjectStatusDto dto) {
-        Optional<Project> projectOptional = projectRepository.findById(dto.getId());
-        if(projectOptional.isEmpty()){
-            throw new NoSuchElementException(String.format("Project with id = %d not exists", dto.getId()));
-        }
-        Project project = projectOptional.get();
-        project.setStatus(dto.getStatus());
+    public ProjectDto updateStatus(Long id, ProjectStatus status) {
+        Project project = projectRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(String.format("Project with id = %d not exists", id))
+        );
+        project.setStatus(status);
         return projectMapper.toProjectDto(projectRepository.save(project));
     }
 
     @Override
     public ProjectDto getById(Long projectId) {
-        Optional<Project> projectOptional = projectRepository.findById(projectId);
-        if(projectOptional.isEmpty()){
-            return new ProjectDto();
-        }
-        return projectMapper.toProjectDto(projectOptional.get());
+        Project project = projectRepository.findById(projectId).orElse(new Project());
+        return projectMapper.toProjectDto(project);
     }
 
     @Override
@@ -94,8 +86,15 @@ public class ProjectServiceJpa implements ProjectService {
 
     @Transactional
     @Override
-    public List<MemberDto> addMember(Long projectId, AddMemberToProjectDto dto) {
-        projectTeamService.addMember(projectId, dto);
+    public List<MemberDto> addMember(Long projectId, Long memberId, Role role) {
+        memberServiceJpa.findById(memberId);
+        if(!isProjectExist(projectId)){
+            throw new NoSuchElementException(String.format("Project with id = %d not exists", projectId));
+        }
+        if(!memberServiceJpa.isMemberExist(memberId)){
+            throw new NoSuchElementException(String.format("Member with id = %d not exists", memberId));
+        }
+        projectTeamService.addMember(projectId, memberId, role);
         return projectTeamService.listAllMembers(projectId);
     }
 
@@ -104,5 +103,9 @@ public class ProjectServiceJpa implements ProjectService {
     public List<MemberDto> deleteMember(Long projectId, Long memberId) {
         projectTeamService.deleteMember(projectId, memberId);
         return projectTeamService.listAllMembers(projectId);
+    }
+
+    public boolean isProjectExist(Long id){
+        return projectRepository.findById(id).isPresent();
     }
 }

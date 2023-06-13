@@ -34,8 +34,9 @@ public class Member implements Serializable{
     @Column(name = "position")
     private String position;
 //    Member's unique account number between active members
-    @Column(name = "account")
-    private Long account;
+    @OneToOne
+    @JoinColumn(name = "account")
+    private UserAccount account;
 //    Member's email
     @Column(name = "email")
     private String email;

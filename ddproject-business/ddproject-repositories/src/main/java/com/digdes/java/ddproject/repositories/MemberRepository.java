@@ -15,10 +15,5 @@ public interface MemberRepository {
 
     Optional<Member> getById(Long id);
 
-
     Optional<List<Member>> search(SearchMemberFilter filter);
-
-    Optional<Member> deleteById(Long id);
-
-    Optional<Member> addToProject(Long projectId, AddMemberToProjectDto addMember);
 }

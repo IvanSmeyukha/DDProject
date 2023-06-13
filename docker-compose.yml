@@ -16,23 +16,6 @@ services:
     networks:
       - java-2023
 
-  liquibase-migrations:
-    image: liquibase/liquibase:4.18
-    depends_on:
-      - postgresql
-    command:
-      - --hub-mode=off
-      - --changelog-file=db.changelog-master.xml
-      - --driver=org.postgresql.Driver
-      - --url=jdbc:postgresql://postgresql:5432/ddproject
-      - --username=user
-      - --password=1234
-      - update
-    volumes:
-      - ./ddproject-business/ddproject-repositories/src/main/resources:/liquibase/changelog
-    networks:
-      - java-2023
-
 volumes:
   ddproject-postgres-data:
 networks:

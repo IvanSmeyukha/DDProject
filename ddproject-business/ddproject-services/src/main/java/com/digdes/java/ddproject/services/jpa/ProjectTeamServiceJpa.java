@@ -1,5 +1,6 @@
 package com.digdes.java.ddproject.services.jpa;
 
+import com.digdes.java.ddproject.common.enums.Role;
 import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.mapping.member.MemberMapper;
@@ -18,8 +19,8 @@ public class ProjectTeamServiceJpa implements ProjectTeamService {
     private final MemberMapper memberMapper;
 
     @Override
-    public ProjectTeam addMember(Long projectId, AddMemberToProjectDto dto) {
-        ProjectTeam projectTeam = new ProjectTeam(projectId, dto.getMemberId(), dto.getRole());
+    public ProjectTeam addMember(Long projectId, Long memberId, Role role) {
+        ProjectTeam projectTeam = new ProjectTeam(projectId, memberId, role);
         return projectTeamRepository.save(projectTeam);
     }
 
@@ -39,6 +40,7 @@ public class ProjectTeamServiceJpa implements ProjectTeamService {
         return projectTeam;
     }
 
+    @Override
     public boolean checkMember(Long projectId, Long memberId){
         ProjectTeam projectTeam = new ProjectTeam(projectId, memberId);
         return projectTeamRepository.findById(projectTeam.getId()).isPresent();

@@ -128,7 +128,6 @@ public class MemberRepositoryJdbc implements MemberRepository {
     }
 
     @SneakyThrows
-    @Override
     public Optional<Member> deleteById(Long id) {
         try (Connection connection = getConnection();
              PreparedStatement ps = connection.prepareStatement(DELETE_MEMBER_BY_ID_QUERY)
@@ -141,7 +140,6 @@ public class MemberRepositoryJdbc implements MemberRepository {
     }
 
     @SneakyThrows
-    @Override
     public Optional<Member> addToProject(Long projectId, AddMemberToProjectDto addMember) {
         try (Connection connection = getConnection();
              PreparedStatement ps = connection.prepareStatement(ADD_MEMBER_TO_PROJECT_QUERY)
@@ -157,12 +155,12 @@ public class MemberRepositoryJdbc implements MemberRepository {
     private String buildSearchQuery(SearchMemberFilter filter, Map<Integer, Object> parameterMap) {
         int parameterIndex = 1;
         String sql = "select id, first_name, last_name, sur_name, position, account, email, status from member";
-        if (filter.getProjectId() != null) {
-            sql += " join project_team on member.id = project_team.member_id where project_team.project_id = ? and";
-            parameterMap.put(parameterIndex++, filter.getProjectId());
-        } else {
-            sql += " where";
-        }
+//        if (filter.getProjectId() != null) {
+//            sql += " join project_team on member.id = project_team.member_id where project_team.project_id = ? and";
+//            parameterMap.put(parameterIndex++, filter.getProjectId());
+//        } else {
+//            sql += " where";
+//        }
         sql += " member.status != 'DELETED'";
         if (filter.getFirstName() != null) {
             sql += " and member.first_name = ?";
