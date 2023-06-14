@@ -4,6 +4,7 @@ import com.digdes.java.ddproject.common.enums.TaskStatus;
 import com.digdes.java.ddproject.common.exceptions.ImpossibleDeadlineException;
 import com.digdes.java.ddproject.common.exceptions.MemberNotInProjectException;
 import com.digdes.java.ddproject.dto.filters.SearchTaskFilterDto;
+import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.dto.task.BaseTaskDto;
 import com.digdes.java.ddproject.dto.task.ExtTaskDto;
 import com.digdes.java.ddproject.mapping.filters.SearchTaskFilterMapper;
@@ -15,6 +16,7 @@ import com.digdes.java.ddproject.repositories.jpa.TaskRepositoryJpa;
 import com.digdes.java.ddproject.repositories.jpa.TaskSpecification;
 import com.digdes.java.ddproject.services.ProjectTeamService;
 import com.digdes.java.ddproject.services.TaskService;
+import com.digdes.java.ddproject.services.notification.Notifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -37,6 +39,7 @@ public class TaskServiceJpa implements TaskService {
     private final TaskMapper taskMapper;
     private final MemberMapper memberMapper;
     private final SearchTaskFilterMapper filterMapper;
+    private final Notifier notifier;
 
     @Transactional
     @Override
@@ -46,6 +49,10 @@ public class TaskServiceJpa implements TaskService {
         validateTask(task);
         task.setStatus(TaskStatus.NEW);
         Task createdTask = taskRepository.save(task);
+        MemberDto executor = memberServiceJpa.findById(task.getExecutor().getId());
+        if(!ObjectUtils.isEmpty(executor.getEmail())){
+            notifier.sendMessage(executor.getEmail(), executor.getFirstName());
+        }
         log.info("Create task with id = {}", createdTask.getId());
         return taskMapper.toExtTaskDto(createdTask);
     }
@@ -87,6 +94,10 @@ public class TaskServiceJpa implements TaskService {
         task.setId(id);
         task.setLastUpdateDate(OffsetDateTime.now());
         Task updatedTask = taskRepository.save(task);
+        MemberDto executor = memberServiceJpa.findById(task.getExecutor().getId());
+        if(!ObjectUtils.isEmpty(executor.getEmail())){
+            notifier.sendMessage(executor.getEmail(), executor.getFirstName());
+        }
         log.info("Update task with id = {}", updatedTask.getId());
         return taskMapper.toExtTaskDto(updatedTask);
     }

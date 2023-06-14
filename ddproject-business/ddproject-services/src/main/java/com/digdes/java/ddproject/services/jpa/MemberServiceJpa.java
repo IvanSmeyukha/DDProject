@@ -7,7 +7,6 @@ import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.mapping.filters.SearchMemberFilterMapper;
 import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.model.Member;
-import com.digdes.java.ddproject.repositories.filters.SearchMemberFilter;
 import com.digdes.java.ddproject.repositories.jpa.MemberRepositoryJpa;
 import com.digdes.java.ddproject.repositories.jpa.MemberSpecification;
 import com.digdes.java.ddproject.services.MemberService;

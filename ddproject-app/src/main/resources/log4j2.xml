@@ -52,6 +52,16 @@
             </Policies>
         </RollingFile>
 
+        <RollingFile name="emailLog" fileName="logs/email.log" filePattern="logs/email-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
         <Console name="consoleLog" target="SYSTEM_OUT">
             <PatternLayout>
                 <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
@@ -78,6 +88,14 @@
 
         <Logger name="com.digdes.java.ddproject.services.jpa.UserAccountServiceJpa">
             <AppenderRef ref="authLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.notification.amqp.EmailMessageConsumer">
+            <AppenderRef ref="emailLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.notification.simple.SimpleNotifier">
+            <AppenderRef ref="emailLog" level="info"/>
         </Logger>
 
         <Root level="info">
