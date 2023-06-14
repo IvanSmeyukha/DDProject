@@ -4,7 +4,6 @@ import com.digdes.java.ddproject.services.notification.EmailGenerator;
 import com.digdes.java.ddproject.services.notification.amqp.EmailMessageConsumer;
 import com.digdes.java.ddproject.services.notification.amqp.EmailMessageProducer;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -32,7 +31,6 @@ public class RabbitMQConfig {
     public Queue queue() {
         return QueueBuilder
                 .nonDurable(queueName)
-                .withArgument("x-dead-letter-exchange", exchangeName + ".dlx")
                 .build();
     }
 

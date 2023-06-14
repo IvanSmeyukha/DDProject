@@ -1,7 +1,5 @@
 package com.digdes.java.ddproject.services.notification;
 
-
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
