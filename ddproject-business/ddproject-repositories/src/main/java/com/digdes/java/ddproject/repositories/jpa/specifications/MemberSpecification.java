@@ -1,4 +1,4 @@
-package com.digdes.java.ddproject.repositories.jpa;
+package com.digdes.java.ddproject.repositories.jpa.specifications;
 
 import com.digdes.java.ddproject.common.enums.MemberStatus;
 import com.digdes.java.ddproject.model.Member;

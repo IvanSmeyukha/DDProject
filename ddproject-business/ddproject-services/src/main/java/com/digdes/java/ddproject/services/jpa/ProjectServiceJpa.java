@@ -5,12 +5,11 @@ import com.digdes.java.ddproject.common.enums.Role;
 import com.digdes.java.ddproject.dto.filters.SearchProjectFilterDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.dto.project.ProjectDto;
-import com.digdes.java.ddproject.mapping.filters.SearchMemberFilterMapper;
 import com.digdes.java.ddproject.mapping.filters.SearchProjectFilterMapper;
 import com.digdes.java.ddproject.mapping.project.ProjectMapper;
 import com.digdes.java.ddproject.model.Project;
 import com.digdes.java.ddproject.repositories.jpa.ProjectRepositoryJpa;
-import com.digdes.java.ddproject.repositories.jpa.ProjectSpecification;
+import com.digdes.java.ddproject.repositories.jpa.specifications.ProjectSpecification;
 import com.digdes.java.ddproject.services.ProjectService;
 import com.digdes.java.ddproject.services.ProjectTeamService;
 import lombok.RequiredArgsConstructor;
@@ -112,7 +111,8 @@ public class ProjectServiceJpa implements ProjectService {
         return projectTeamService.listAllMembers(projectId);
     }
 
-    private boolean isProjectExist(Long id){
+    @Override
+    public boolean isProjectExist(Long id){
         return projectRepository.findById(id).isPresent();
     }
 }

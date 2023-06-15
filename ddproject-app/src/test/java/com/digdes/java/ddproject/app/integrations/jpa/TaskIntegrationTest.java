@@ -82,9 +82,13 @@ class TaskIntegrationTest extends IntegrationEnvironment {
     @Test
     @WithMockUser(username = "root")
     void create_UserNotMember_Exception() {
+        Long projectId = getRandomLong();
+        projectRepository.save(createProject(projectId));
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
-                .laborHours(1L).build();
+                .laborHours(1L)
+                .projectId(projectId)
+                .build();
 
         Assertions.assertThrows(MemberNotInProjectException.class, () -> taskService.create(task));
     }
@@ -207,10 +211,13 @@ class TaskIntegrationTest extends IntegrationEnvironment {
     @WithMockUser(username = "root")
     void update_UserNotMember_Exception() {
         Task originaltask = saveRandomTask();
+        Long projectId = getRandomLong();
+        projectRepository.save(createProject(projectId));
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)
                 .creationDate(OffsetDateTime.now())
+                .projectId(projectId)
                 .build();
 
         Assertions.assertThrows(MemberNotInProjectException.class, () -> taskService.update(originaltask.getId(), task));

@@ -11,13 +11,14 @@ import com.digdes.java.ddproject.mapping.filters.SearchTaskFilterMapper;
 import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.mapping.project.ProjectMapper;
 import com.digdes.java.ddproject.mapping.task.TaskMapper;
-import com.digdes.java.ddproject.mapping.useraccount.UserAccountMapper;
 import com.digdes.java.ddproject.model.Member;
 import com.digdes.java.ddproject.model.Task;
 import com.digdes.java.ddproject.repositories.jpa.TaskRepositoryJpa;
 import com.digdes.java.ddproject.services.ProjectTeamService;
 import com.digdes.java.ddproject.services.jpa.MemberServiceJpa;
+import com.digdes.java.ddproject.services.jpa.ProjectServiceJpa;
 import com.digdes.java.ddproject.services.jpa.TaskServiceJpa;
+import com.digdes.java.ddproject.services.notification.Notifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,8 @@ class TaskServiceJpaTest {
     private ProjectTeamService projectTeamService;
     @Mock
     private MemberServiceJpa memberService;
+    @Mock
+    private ProjectServiceJpa projectService;
     private TaskMapper taskMapper;
     @Spy
     private MemberMapper memberMapper;
@@ -56,6 +59,8 @@ class TaskServiceJpaTest {
     private SearchTaskFilterMapper filterMapper;
     @Spy
     private ProjectMapper projectMapper;
+    @Mock
+    private Notifier notifier;
 
     private TaskServiceJpa taskService;
 
@@ -68,7 +73,15 @@ class TaskServiceJpaTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         taskMapper = Mockito.spy(new TaskMapper(memberMapper, projectMapper));
-        taskService = new TaskServiceJpa(taskRepository, projectTeamService, memberService, taskMapper, memberMapper, filterMapper);
+        taskService = new TaskServiceJpa(
+                taskRepository,
+                projectTeamService,
+                memberService,
+                projectService,
+                taskMapper,
+                memberMapper,
+                filterMapper,
+                notifier);
     }
 
     private MemberDto createMemberDto() {
@@ -109,6 +122,7 @@ class TaskServiceJpaTest {
                 .laborHours(1L).build();
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
+        when(projectService.isProjectExist(any())).thenReturn(true);
         when(memberService.findByAccountUsername(any())).thenReturn(new MemberDto());
 
         Assertions.assertThrows(MemberNotInProjectException.class, () -> taskService.create(task));
@@ -124,7 +138,8 @@ class TaskServiceJpaTest {
         MemberDto author = createMemberDto();
         author.setId(getRandomLong());
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), any())).thenReturn(false);
+        when(projectTeamService.isMemberInProject(any(), any())).thenReturn(false);
+        when(projectService.isProjectExist(any())).thenReturn(true);
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)
@@ -137,17 +152,14 @@ class TaskServiceJpaTest {
     @Test
     @WithMockUser(username = "root")
     void create_ExecutorNotInProject_Exception() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
         Long projectId = getRandomLong();
         MemberDto author = createMemberDto();
         author.setId(getRandomLong());
         MemberDto executor = createMemberDto();
         executor.setId(getRandomLong());
-        when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), eq(author.getId()))).thenReturn(true);
-        when(projectTeamService.checkMember(any(), eq(executor.getId()))).thenReturn(false);
+        when(projectTeamService.isMemberInProject(any(), eq(executor.getId()))).thenReturn(false);
+        when(projectService.isProjectExist(any())).thenReturn(true);
+        when(memberService.isMemberExist(any())).thenReturn(true);
 
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
@@ -169,7 +181,8 @@ class TaskServiceJpaTest {
         MemberDto author = createMemberDto();
         author.setId(getRandomLong());
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), eq(author.getId()))).thenReturn(true);
+        when(projectTeamService.isMemberInProject(any(), eq(author.getId()))).thenReturn(true);
+        when(projectService.isProjectExist(any())).thenReturn(true);
         BaseTaskDto taskDto = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)
@@ -195,7 +208,10 @@ class TaskServiceJpaTest {
         MemberDto executor = createMemberDto();
         executor.setId(getRandomLong());
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), any())).thenReturn(true);
+        when(projectTeamService.isMemberInProject(any(), any())).thenReturn(true);
+        when(projectService.isProjectExist(any())).thenReturn(true);
+        when(memberService.isMemberExist(any())).thenReturn(true);
+        when(memberService.findById(any())).thenReturn(new MemberDto());
         BaseTaskDto taskDto = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)
@@ -246,6 +262,7 @@ class TaskServiceJpaTest {
         Long taskId = getRandomLong();
         when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
         when(memberService.findByAccountUsername(any())).thenReturn(new MemberDto());
+        when(projectService.isProjectExist(any())).thenReturn(true);
 
         Assertions.assertThrows(MemberNotInProjectException.class, () -> taskService.update(taskId, task));
     }
@@ -262,7 +279,8 @@ class TaskServiceJpaTest {
         author.setId(getRandomLong());
         when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), any())).thenReturn(false);
+        when(projectTeamService.isMemberInProject(any(), any())).thenReturn(false);
+        when(projectService.isProjectExist(any())).thenReturn(true);
 
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
@@ -277,9 +295,6 @@ class TaskServiceJpaTest {
     @Test
     @WithMockUser(username = "root")
     void update_ExecutorNotInProject_Exception() {
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
         Long taskId = getRandomLong();
         Long projectId = getRandomLong();
         MemberDto author = createMemberDto();
@@ -287,9 +302,9 @@ class TaskServiceJpaTest {
         MemberDto executor = createMemberDto();
         executor.setId(getRandomLong());
         when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
-        when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), eq(author.getId()))).thenReturn(true);
-        when(projectTeamService.checkMember(any(), eq(executor.getId()))).thenReturn(false);
+        when(projectService.isProjectExist(any())).thenReturn(true);
+        when(projectTeamService.isMemberInProject(any(), eq(executor.getId()))).thenReturn(false);
+        when(memberService.isMemberExist(any())).thenReturn(true);
 
         BaseTaskDto task = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
@@ -314,7 +329,9 @@ class TaskServiceJpaTest {
         author.setId(getRandomLong());
         when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), eq(author.getId()))).thenReturn(true);
+        when(projectTeamService.isMemberInProject(any(), eq(author.getId()))).thenReturn(true);
+        when(projectService.isProjectExist(any())).thenReturn(true);
+
         BaseTaskDto taskDto = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)
@@ -343,7 +360,11 @@ class TaskServiceJpaTest {
         executor.setId(getRandomLong());
         when(taskRepository.findById(any())).thenReturn(Optional.of(new Task()));
         when(memberService.findByAccountUsername(any())).thenReturn(author);
-        when(projectTeamService.checkMember(any(), any())).thenReturn(true);
+        when(projectTeamService.isMemberInProject(any(), any())).thenReturn(true);
+        when(projectService.isProjectExist(any())).thenReturn(true);
+        when(memberService.isMemberExist(any())).thenReturn(true);
+        when(memberService.findById(any())).thenReturn(new MemberDto());
+
         BaseTaskDto taskDto = BaseTaskDto.builder()
                 .deadline(OffsetDateTime.now().plusDays(2L))
                 .laborHours(1L)

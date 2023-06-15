@@ -16,7 +16,7 @@ public class EmailMessageConsumer {
     @RabbitListener(queues = "#{@queueName}")
     public void receiveMessage(Message message) {
         String email = message.getMessageProperties().getHeader("email");
-        String memberName = message.getMessageProperties().getHeader("member");
+        String memberName = message.getMessageProperties().getHeader("name");
         mailSender.send(emailGenerator.generateEmail(email, memberName));
         log.info("Notification sent to {}", email);
     }

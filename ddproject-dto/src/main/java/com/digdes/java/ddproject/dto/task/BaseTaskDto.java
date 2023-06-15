@@ -34,6 +34,7 @@ public class BaseTaskDto {
     @Schema(description = "Task's status")
     private TaskStatus status;
     @Schema(description = "Task's author id")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long authorId;
     @Schema(description = "Task's executor id")
     private Long executorId;
@@ -41,7 +42,6 @@ public class BaseTaskDto {
     @NotNull(message = "Project id is required field")
     private Long projectId;
     @Schema(description = "Task's creation date")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OffsetDateTime creationDate;
     @Schema(description = "Last date when Task was updated")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
