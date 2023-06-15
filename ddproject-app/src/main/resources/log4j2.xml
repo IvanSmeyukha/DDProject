@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Appenders>
+        <RollingFile name="memberLog" fileName="logs/member.log" filePattern="logs/member-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="projectLog" fileName="logs/project.log" filePattern="logs/project-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="taskLog" fileName="logs/task.log" filePattern="logs/task-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="exceptionLog" fileName="logs/exception.log" filePattern="logs/exception-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="authLog" fileName="logs/auth.log" filePattern="logs/auth-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="emailLog" fileName="logs/email.log" filePattern="logs/email-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <Console name="consoleLog" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.digdes.java.ddproject.services.jpa.MemberServiceJpa">
+            <AppenderRef ref="memberLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.jpa.ProjectServiceJpa">
+            <AppenderRef ref="projectLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.jpa.TaskServiceJpa">
+            <AppenderRef ref="taskLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.web.ControllerExceptionHandler">
+            <AppenderRef ref="exceptionLog" level="warn"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.jpa.UserAccountServiceJpa">
+            <AppenderRef ref="authLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.notification.amqp.EmailMessageConsumer">
+            <AppenderRef ref="emailLog" level="info"/>
+        </Logger>
+
+        <Logger name="com.digdes.java.ddproject.services.notification.simple.SimpleNotifier">
+            <AppenderRef ref="emailLog" level="info"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="consoleLog"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
