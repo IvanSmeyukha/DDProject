@@ -1,9 +1,10 @@
 package com.digdes.java.ddproject.repositories.jdbc;
 
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
+import com.digdes.java.ddproject.common.enums.MemberStatus;
+import com.digdes.java.ddproject.dto.filters.SearchMemberFilterDto;
 import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
-import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.model.Member;
+import com.digdes.java.ddproject.model.UserAccount;
 import com.digdes.java.ddproject.repositories.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,7 +18,6 @@ public class MemberRepositoryJdbc implements MemberRepository {
     private final String dbUrl;
     private final String dbUser;
     private final String dbPassword;
-    private final MemberMapper mapper;
 
     private static final String CREATE_MEMBER_QUERY = """
             insert into member(first_name, last_name, sur_name, position, account, email, status)
@@ -97,17 +97,31 @@ public class MemberRepositoryJdbc implements MemberRepository {
             ps.setLong(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
-                    member = mapper.fromResultSet(resultSet);
+                    member = fromResultSet(resultSet);
                 }
             }
         }
         return Optional.of(member);
     }
 
+    @SneakyThrows
+    private Member fromResultSet(ResultSet resultSet) {
+        return Member.builder()
+                .id(resultSet.getLong("id"))
+                .firstName(resultSet.getString("first_name"))
+                .lastName(resultSet.getString("last_name"))
+                .patronymic(resultSet.getString("sur_name"))
+                .account(UserAccount.builder().id(resultSet.getLong("account")).build())
+                .position(resultSet.getString("position"))
+                .email(resultSet.getString("email"))
+                .status(MemberStatus.valueOf(resultSet.getString("status")))
+                .build();
+    }
+
 
     @SneakyThrows
     @Override
-    public Optional<List<Member>> search(SearchMemberFilter filter) {
+    public Optional<List<Member>> search(SearchMemberFilterDto filter) {
         List<Member> members = new ArrayList<>();
         Map<Integer, Object> parameterMap = new HashMap<>();
         String sql = buildSearchQuery(filter, parameterMap);
@@ -119,7 +133,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
             }
             try (ResultSet resultSet = ps.executeQuery()) {
                 while (resultSet.next()) {
-                    Member member = mapper.fromResultSet(resultSet);
+                    Member member = fromResultSet(resultSet);
                     members.add(member);
                 }
             }
@@ -152,7 +166,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
         }
     }
 
-    private String buildSearchQuery(SearchMemberFilter filter, Map<Integer, Object> parameterMap) {
+    private String buildSearchQuery(SearchMemberFilterDto filter, Map<Integer, Object> parameterMap) {
         int parameterIndex = 1;
         String sql = "select id, first_name, last_name, sur_name, position, account, email, status from member";
 //        if (filter.getProjectId() != null) {

@@ -1,7 +1,6 @@
 package com.digdes.java.ddproject.repositories;
 
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
-import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
+import com.digdes.java.ddproject.dto.filters.SearchMemberFilterDto;
 import com.digdes.java.ddproject.model.Member;
 
 import java.util.List;
@@ -15,5 +14,5 @@ public interface MemberRepository {
 
     Optional<Member> getById(Long id);
 
-    Optional<List<Member>> search(SearchMemberFilter filter);
+    Optional<List<Member>> search(SearchMemberFilterDto filter);
 }

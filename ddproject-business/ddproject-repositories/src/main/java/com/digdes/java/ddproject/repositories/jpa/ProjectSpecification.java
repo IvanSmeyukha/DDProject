@@ -1,7 +1,7 @@
 package com.digdes.java.ddproject.repositories.jpa;
 
-import com.digdes.java.ddproject.dto.filters.SearchProjectFilter;
 import com.digdes.java.ddproject.model.Project;
+import com.digdes.java.ddproject.repositories.filters.SearchProjectFilter;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;

@@ -12,6 +12,9 @@
     <artifactId>ddproject-common</artifactId>
 
     <dependencies>
+
+        <!-- utils -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

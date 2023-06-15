@@ -1,7 +1,6 @@
 package com.digdes.java.ddproject.repositories.file;
 
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
-import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
+import com.digdes.java.ddproject.dto.filters.SearchMemberFilterDto;
 import com.digdes.java.ddproject.model.Member;
 import com.digdes.java.ddproject.repositories.MemberRepository;
 import lombok.SneakyThrows;
@@ -83,7 +82,7 @@ public class MemberRepositoryFile implements MemberRepository {
     }
 
     @Override
-    public Optional<List<Member>> search(SearchMemberFilter filter) {
+    public Optional<List<Member>> search(SearchMemberFilterDto filter) {
         return null;
     }
 

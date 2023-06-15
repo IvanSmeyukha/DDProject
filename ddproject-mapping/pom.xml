@@ -12,6 +12,9 @@
     <artifactId>ddproject-mapping</artifactId>
 
     <dependencies>
+
+        <!-- modules -->
+
         <dependency>
             <groupId>com.digdes.ddproject</groupId>
             <artifactId>ddproject-model</artifactId>
@@ -23,6 +26,14 @@
             <artifactId>ddproject-dto</artifactId>
             <version>${revision}${changelist}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.digdes.ddproject</groupId>
+            <artifactId>ddproject-repositories</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <!-- web -->
 
         <dependency>
             <groupId>org.springdoc</groupId>

@@ -1,11 +1,10 @@
 package com.digdes.java.ddproject.web;
 
 import com.digdes.java.ddproject.dto.error.ApiErrorResponse;
-import com.digdes.java.ddproject.dto.filters.SearchMemberFilter;
+import com.digdes.java.ddproject.dto.filters.SearchMemberFilterDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.services.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,6 +22,7 @@ import java.util.List;
 @Tag(name = "member", description = "Member controller")
 public class MemberController {
     private final MemberService memberService;
+
 
     @Operation(summary = "Get member by id",
             responses = {
@@ -44,6 +44,12 @@ public class MemberController {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "409",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
     )
@@ -59,6 +65,12 @@ public class MemberController {
             responses = {
                     @ApiResponse(responseCode = "200"),
                     @ApiResponse(responseCode = "400",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "404",
+                            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+                    ),
+                    @ApiResponse(responseCode = "409",
                             content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
                     )
             }
@@ -100,7 +112,7 @@ public class MemberController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public List<MemberDto> search(@RequestBody SearchMemberFilter filter) {
+    public List<MemberDto> search(@RequestBody SearchMemberFilterDto filter) {
         return memberService.search(filter);
     }
 

@@ -2,12 +2,11 @@ package com.digdes.java.ddproject.services.jpa;
 
 import com.digdes.java.ddproject.common.enums.ProjectStatus;
 import com.digdes.java.ddproject.common.enums.Role;
-import com.digdes.java.ddproject.common.exceptions.NullIdException;
-import com.digdes.java.ddproject.dto.filters.SearchProjectFilter;
-import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
+import com.digdes.java.ddproject.dto.filters.SearchProjectFilterDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.dto.project.ProjectDto;
-import com.digdes.java.ddproject.dto.project.UpdateProjectStatusDto;
+import com.digdes.java.ddproject.mapping.filters.SearchMemberFilterMapper;
+import com.digdes.java.ddproject.mapping.filters.SearchProjectFilterMapper;
 import com.digdes.java.ddproject.mapping.project.ProjectMapper;
 import com.digdes.java.ddproject.model.Project;
 import com.digdes.java.ddproject.repositories.jpa.ProjectRepositoryJpa;
@@ -15,22 +14,23 @@ import com.digdes.java.ddproject.repositories.jpa.ProjectSpecification;
 import com.digdes.java.ddproject.services.ProjectService;
 import com.digdes.java.ddproject.services.ProjectTeamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceJpa implements ProjectService {
     private final ProjectRepositoryJpa projectRepository;
     private final ProjectTeamService projectTeamService;
-    private final MemberServiceJpa memberServiceJpa;
+    private final MemberServiceJpa memberService;
     private final ProjectMapper projectMapper;
+    private final SearchProjectFilterMapper filterMapper;
 
     @Transactional
     @Override
@@ -40,7 +40,9 @@ public class ProjectServiceJpa implements ProjectService {
             throw new DuplicateKeyException(String.format("Project with id = %d already exists", project.getId()));
         }
         project.setStatus(ProjectStatus.DRAFT);
-        return projectMapper.toProjectDto(projectRepository.save(project));
+        Project createdProject = projectRepository.save(project);
+        log.info("Create project with id = {}", createdProject.getId());
+        return projectMapper.toProjectDto(createdProject);
     }
 
     @Transactional
@@ -51,7 +53,9 @@ public class ProjectServiceJpa implements ProjectService {
         }
         Project project = projectMapper.fromProjectDto(dto);
         project.setId(id);
-        return projectMapper.toProjectDto(projectRepository.save(project));
+        Project updatedProject = projectRepository.save(project);
+        log.info("Update project with id = {}", updatedProject.getId());
+        return projectMapper.toProjectDto(updatedProject);
     }
 
     @Transactional
@@ -61,18 +65,20 @@ public class ProjectServiceJpa implements ProjectService {
                 () -> new NoSuchElementException(String.format("Project with id = %d not exists", id))
         );
         project.setStatus(status);
-        return projectMapper.toProjectDto(projectRepository.save(project));
+        Project updatedProject = projectRepository.save(project);
+        log.info("Update the status of the project with id = {}", updatedProject.getId());
+        return projectMapper.toProjectDto(updatedProject);
     }
 
     @Override
-    public ProjectDto getById(Long projectId) {
+    public ProjectDto findById(Long projectId) {
         Project project = projectRepository.findById(projectId).orElse(new Project());
         return projectMapper.toProjectDto(project);
     }
 
     @Override
-    public List<ProjectDto> search(SearchProjectFilter filter) {
-        List<Project> projects = projectRepository.findAll(ProjectSpecification.getSpec(filter));
+    public List<ProjectDto> search(SearchProjectFilterDto filter) {
+        List<Project> projects = projectRepository.findAll(ProjectSpecification.getSpec(filterMapper.fromDto(filter)));
         return projects
                 .stream()
                 .map(projectMapper::toProjectDto)
@@ -87,14 +93,14 @@ public class ProjectServiceJpa implements ProjectService {
     @Transactional
     @Override
     public List<MemberDto> addMember(Long projectId, Long memberId, Role role) {
-        memberServiceJpa.findById(memberId);
         if(!isProjectExist(projectId)){
             throw new NoSuchElementException(String.format("Project with id = %d not exists", projectId));
         }
-        if(!memberServiceJpa.isMemberExist(memberId)){
+        if(!memberService.isMemberExist(memberId)){
             throw new NoSuchElementException(String.format("Member with id = %d not exists", memberId));
         }
         projectTeamService.addMember(projectId, memberId, role);
+        log.info("Add member with id = {} to the project with id = {}", memberId, projectId);
         return projectTeamService.listAllMembers(projectId);
     }
 
@@ -102,10 +108,11 @@ public class ProjectServiceJpa implements ProjectService {
     @Override
     public List<MemberDto> deleteMember(Long projectId, Long memberId) {
         projectTeamService.deleteMember(projectId, memberId);
+        log.info("Delete member with id = {} from the project with id = {}", memberId, projectId);
         return projectTeamService.listAllMembers(projectId);
     }
 
-    public boolean isProjectExist(Long id){
+    private boolean isProjectExist(Long id){
         return projectRepository.findById(id).isPresent();
     }
 }

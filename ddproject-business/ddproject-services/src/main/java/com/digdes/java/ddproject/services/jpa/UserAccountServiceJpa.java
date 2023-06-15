@@ -7,7 +7,7 @@ import com.digdes.java.ddproject.repositories.jpa.UserAccountRepositoryJpa;
 import com.digdes.java.ddproject.services.UserAccountService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceJpa implements UserAccountService {
@@ -27,14 +28,22 @@ public class UserAccountServiceJpa implements UserAccountService {
     public UserAccountDto save(UserAccountDto dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         UserAccount user = userAccountMapper.fromUserAccountDto(dto);
-        return userAccountMapper.toUserAccountDto(userAccountRepository.save(user));
+        UserAccount createdAccount = userAccountRepository.save(user);
+        log.info("Registered new User with account id = {}", createdAccount.getId());
+        return userAccountMapper.toUserAccountDto(createdAccount);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAccount user = userAccountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
+        log.info("User with account id = {} logged in", user.getId());
         return new User(username, user.getPassword(), Collections.emptyList());
+    }
+
+    @Override
+    public UserAccountDto findById(Long id) {
+        return userAccountMapper.toUserAccountDto(userAccountRepository.findById(id).orElse(new UserAccount()));
     }
 
     @PostConstruct
