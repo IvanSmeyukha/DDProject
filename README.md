@@ -2,7 +2,7 @@
 
 Основная цель: разработать систему управления проектами.
 
-![ddproject drawio (2)](https://github.com/IvanSmeyukha/DDProject/assets/87076117/6eee9716-5e86-4861-880d-b0bffbe0eda5)
+![ddproject drawio (3)](https://github.com/IvanSmeyukha/DDProject/assets/87076117/3e555c9f-b6a1-4777-9044-06e1159af6fc)
 
 
 Описание модулей:
