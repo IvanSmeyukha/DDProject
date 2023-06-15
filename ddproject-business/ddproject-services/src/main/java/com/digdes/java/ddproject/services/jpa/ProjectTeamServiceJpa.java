@@ -40,7 +40,7 @@ public class ProjectTeamServiceJpa implements ProjectTeamService {
     }
 
     @Override
-    public boolean checkMember(Long projectId, Long memberId){
+    public boolean isMemberInProject(Long projectId, Long memberId){
         ProjectTeam projectTeam = new ProjectTeam(projectId, memberId);
         return projectTeamRepository.findById(projectTeam.getId()).isPresent();
     }

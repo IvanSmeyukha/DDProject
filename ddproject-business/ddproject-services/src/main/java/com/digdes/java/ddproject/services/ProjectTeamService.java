@@ -1,7 +1,6 @@
 package com.digdes.java.ddproject.services;
 
 import com.digdes.java.ddproject.common.enums.Role;
-import com.digdes.java.ddproject.dto.project.AddMemberToProjectDto;
 import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.model.ProjectTeam;
 
@@ -14,5 +13,5 @@ public interface ProjectTeamService {
 
     ProjectTeam deleteMember(Long projectId, Long memberId);
 
-    boolean checkMember(Long projectId, Long memberId);
+    boolean isMemberInProject(Long projectId, Long memberId);
 }

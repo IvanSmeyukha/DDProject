@@ -133,7 +133,6 @@ class MemberServiceJpaTest {
         Long id = getRandomLong();
         UserAccountDto user = new UserAccountDto();
         user.setId(getRandomLong());
-        when(userAccountService.findById(any())).thenReturn(user);
         when(memberRepository.findMemberById(any())).thenReturn(Optional.empty());
 
         Assertions.assertThrows(NoSuchElementException.class, () -> memberService.update(id, dto));
@@ -158,6 +157,7 @@ class MemberServiceJpaTest {
         UserAccountDto user = new UserAccountDto();
         user.setId(getRandomLong());
         when(userAccountService.findById(any())).thenReturn(user);
+        when(memberRepository.findMemberById(any())).thenReturn(Optional.of(new Member()));
 
         when(memberRepository.findMemberByIdNotAndAccount_Id(any(), any())).thenReturn(Optional.of(createMember()));
 

@@ -1,4 +1,4 @@
-package com.digdes.java.ddproject.repositories.jpa;
+package com.digdes.java.ddproject.repositories.jpa.specifications;
 
 import com.digdes.java.ddproject.model.Project;
 import com.digdes.java.ddproject.repositories.filters.SearchProjectFilter;
@@ -18,7 +18,9 @@ public class ProjectSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("id"), filter.getId()));
             }
             if (!ObjectUtils.isEmpty(filter.getTitle())) {
-                predicates.add(criteriaBuilder.like(root.get("title"), filter.getTitle()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("title")),
+                        String.format("%%%s%%", filter.getTitle().toLowerCase())));
             }
             if (!ObjectUtils.isEmpty(filter.getStatuses())) {
                 predicates.add(criteriaBuilder.or(

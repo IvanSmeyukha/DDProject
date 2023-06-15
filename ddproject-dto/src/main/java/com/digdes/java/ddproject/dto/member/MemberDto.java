@@ -33,6 +33,5 @@ public class MemberDto {
     @Email(message = "Incorrect email format")
     private String email;
     @Schema(description = "Member's status")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private MemberStatus status;
 }

@@ -24,4 +24,6 @@ public interface ProjectService {
     List<MemberDto> addMember(Long projectId, Long memberId, Role role);
 
     List<MemberDto> deleteMember(Long projectId, Long memberId);
+
+    boolean isProjectExist(Long projectId);
 }

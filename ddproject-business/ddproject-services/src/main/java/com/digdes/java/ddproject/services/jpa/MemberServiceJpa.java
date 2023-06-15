@@ -7,9 +7,8 @@ import com.digdes.java.ddproject.dto.member.MemberDto;
 import com.digdes.java.ddproject.mapping.filters.SearchMemberFilterMapper;
 import com.digdes.java.ddproject.mapping.member.MemberMapper;
 import com.digdes.java.ddproject.model.Member;
-import com.digdes.java.ddproject.repositories.filters.SearchMemberFilter;
 import com.digdes.java.ddproject.repositories.jpa.MemberRepositoryJpa;
-import com.digdes.java.ddproject.repositories.jpa.MemberSpecification;
+import com.digdes.java.ddproject.repositories.jpa.specifications.MemberSpecification;
 import com.digdes.java.ddproject.services.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class MemberServiceJpa implements MemberService {
             if (memberWithSuchAccount.isPresent()) {
                 throw new NotUniqueAccountException(
                         String.format("Account with id = %d already attached with Member with id = %d",
-                                dto.getId(),
+                                dto.getAccount(),
                                 memberWithSuchAccount.get().getId()
                         )
                 );
@@ -70,6 +69,9 @@ public class MemberServiceJpa implements MemberService {
     @Transactional
     @Override
     public MemberDto update(Long id, MemberDto dto) {
+        if(!isMemberExist(id)) {
+            throw new NoSuchElementException(String.format("Member with id = %d not exists", id));
+        }
         if (!ObjectUtils.isEmpty(dto.getAccount()) && ObjectUtils.isEmpty(userAccountService.findById(dto.getAccount()).getId())) {
             throw new NoSuchElementException(String.format("Account with id = %d not exist", dto.getAccount()));
         }
@@ -77,14 +79,11 @@ public class MemberServiceJpa implements MemberService {
         if (memberWithSuchAccount.isPresent()) {
             throw new NotUniqueAccountException(
                     String.format("Account with id = %d already attached with Member with id = %d",
-                            dto.getId(),
+                            dto.getAccount(),
                             memberWithSuchAccount.get().getId()
                     )
             );
         }
-        memberRepository.findMemberById(id).orElseThrow(
-                () -> new NoSuchElementException(String.format("Member with id = %d not exists", id))
-        );
         Member member = memberMapper.fromMemberDto(dto);
         member.setId(id);
         Member updatedMember = memberRepository.save(member);

@@ -1,4 +1,4 @@
-package com.digdes.java.ddproject.repositories.jpa;
+package com.digdes.java.ddproject.repositories.jpa.specifications;
 
 import com.digdes.java.ddproject.model.Task;
 import com.digdes.java.ddproject.repositories.filters.SearchTaskFilter;
@@ -15,7 +15,9 @@ public class TaskSpecification {
         return ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (!ObjectUtils.isEmpty(filter.getTitle())) {
-                predicates.add(criteriaBuilder.like(root.get("title"), filter.getTitle()));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("title")),
+                        String.format("%%%s%%", filter.getTitle().toLowerCase())));
             }
             if (!ObjectUtils.isEmpty(filter.getAuthorId())) {
                 predicates.add(criteriaBuilder.equal(root.get("author").get("id"), filter.getAuthorId()));
